@@ -87,19 +87,19 @@ If the balance is less than the `threshold`, you want to set a `openForWithdraw`
 > 👩‍💻 You can call `yarn deploy` any time you want a fresh contract
 
 #### 🥅 Goals
-- [ ] Can you see `timeLeft` counting down in the `Staker UI` tab when you trigger a transaction with the faucet?
+- [x] Can you see `timeLeft` counting down in the `Staker UI` tab when you trigger a transaction with the faucet?
 - [ ] If you `stake()` enough ETH before the `deadline`, does it call `complete()`?
-- [ ] If you don't `stake()` enough can you `withdraw(address payable)` your funds?
+- [x] If you don't `stake()` enough can you `withdraw(address payable)` your funds?
 
 ⚔️ Side Quests
-- [ ] Can execute get called more than once, and is that okay?
-- [ ] Can you deposit and withdraw freely after the `deadline`, and is that okay?
+- [x] Can execute get called more than once, and is that okay?
+- [ ] Can you deposit and withdraw freely after the `deadline`, and is that okay? No
 - [ ] What are other implications of *anyone* being able to withdraw for someone?
-- [ ] Can you implement your own [modifier](https://solidity-by-example.org/function-modifier/) that checks whether `deadline` was passed or not? Where can you use it?
+- [x] Can you implement your own [modifier](https://solidity-by-example.org/function-modifier/) that checks whether `deadline` was passed or not? Where can you use it?
 
 🐸 It's a trap!
-- [ ] Make sure funds can't get trapped in the contract! Try sending funds after you have executed!
-- [ ] Try to create a [modifier](https://solidity-by-example.org/function-modifier/) called `notCompleted`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
+- [x] Make sure funds can't get trapped in the contract! Try sending funds after you have executed!
+- [x] Try to create a [modifier](https://solidity-by-example.org/function-modifier/) called `notCompleted`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
 ---
 

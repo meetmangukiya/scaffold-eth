@@ -1,3 +1,5 @@
+const ethers = require("ethers");
+
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -9,7 +11,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const deadlineSeconds = Math.ceil((now.getTime() + fiveDays) / 1000);
   await deploy("Staker", {
     from: deployer,
-    args: [exampleExternalContract.address, deadlineSeconds, 10 ** 15],
+    args: [
+      exampleExternalContract.address,
+      deadlineSeconds,
+      ethers.utils.parseEther("100"),
+    ],
     log: true,
   });
 };

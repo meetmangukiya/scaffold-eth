@@ -50,7 +50,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -257,7 +257,7 @@ function App(props) {
   console.log("💵 threshold:", threshold);
 
   // ** keep track of a variable from the contract in the local React state:
-  const balanceStaked = useContractReader(readContracts, "Staker", "balances", [address]);
+  const balanceStaked = useContractReader(readContracts, "Staker", "stakedAmountOf", [address]);
   console.log("💸 balanceStaked:", balanceStaked);
 
   // ** 📟 Listen for broadcast events
