@@ -26,13 +26,29 @@ contract Staker {
     threshold = thresholdAmount;
   }
 
+  modifier beforeDeadline() {
+    require(timeLeft() != 0, "Deadline has passed!");
+    _;
+  }
+
+  modifier afterDeadline() {
+    require(timeLeft() == 0, "Deadline has not passed!");
+    _;
+  }
+
+  modifier thresholdMet() {
+    require(address(this).balance >= threshold, "threshold not met!");
+    _;
+  }
+
+  modifier thresholdNotMet() {
+    require(address(this).balance < threshold, "threshold met!");
+  _;
+  }
+
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
-  function stake() external payable {
-    require(
-      timeLeft() != 0,
-      "No staking allowed after deadline has passed"
-    );
+  function stake() external payable beforeDeadline {
     uint256 amountStaked = msg.value;
     balances[msg.sender] += amountStaked;
     emit Stake(msg.sender, amountStaked);
@@ -40,8 +56,7 @@ contract Staker {
 
   // After some `deadline` allow anyone to call an `execute()` function
   //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
-  function execute() external {
-    require(timeLeft() == 0, "Deadline has not passed yet");
+  function execute() external afterDeadline thresholdMet {
     require(
       address(this).balance > threshold,
       "Threshold was not, users should withdraw their funds"
@@ -54,13 +69,7 @@ contract Staker {
   }
 
   // if the `threshold` was not met, allow everyone to call a `withdraw()` function
-  function withdraw() public {
-    require(timeLeft() == 0, "Time is still left");
-    require(
-      address(this).balance < threshold,
-      "Staked amount is greater than threshold, cannot withdraw, its locked now!"
-    );
-
+  function withdraw() public afterDeadline thresholdNotMet {
     uint256 toReturn = stakedAmountOf(msg.sender);
     (bool sent, ) = msg.sender.call{value: toReturn}("");
     require(sent, "Failed to withraw Ether");
