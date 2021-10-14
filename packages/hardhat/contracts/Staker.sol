@@ -14,8 +14,14 @@ contract Staker {
 
   event Stake(address, uint256);
 
-  constructor(address exampleExternalContractAddress, uint256 target, uint256 thresholdAmount) public {
-    exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
+  constructor(
+    address exampleExternalContractAddress,
+    uint256 target,
+    uint256 thresholdAmount
+  ) public {
+    exampleExternalContract = ExampleExternalContract(
+      exampleExternalContractAddress
+    );
     deadline = target;
     threshold = thresholdAmount;
   }
@@ -23,6 +29,10 @@ contract Staker {
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
   function stake() external payable {
+    require(
+      timeLeft() != 0,
+      "No staking allowed after deadline has passed"
+    );
     uint256 amountStaked = msg.value;
     balances[msg.sender] += amountStaked;
     emit Stake(msg.sender, amountStaked);
@@ -32,7 +42,10 @@ contract Staker {
   //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
   function execute() external {
     require(timeLeft() == 0, "Deadline has not passed yet");
-    require(address(this).balance > threshold, "Threshold was not, users should withdraw their funds");
+    require(
+      address(this).balance > threshold,
+      "Threshold was not, users should withdraw their funds"
+    );
     exampleExternalContract.complete{value: address(this).balance}();
   }
 
@@ -43,7 +56,10 @@ contract Staker {
   // if the `threshold` was not met, allow everyone to call a `withdraw()` function
   function withdraw() public {
     require(timeLeft() == 0, "Time is still left");
-    require(address(this).balance < threshold, "Staked amount is greater than threshold, cannot withdraw, its locked now!");
+    require(
+      address(this).balance < threshold,
+      "Staked amount is greater than threshold, cannot withdraw, its locked now!"
+    );
 
     uint256 toReturn = stakedAmountOf(msg.sender);
     (bool sent, ) = msg.sender.call{value: toReturn}("");
@@ -55,4 +71,6 @@ contract Staker {
     if (now >= deadline) return 0;
     else return deadline - now;
   }
+
+  fallback() external payable {}
 }

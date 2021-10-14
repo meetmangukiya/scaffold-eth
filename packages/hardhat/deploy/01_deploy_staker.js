@@ -5,11 +5,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     "ExampleExternalContract"
   );
   const now = new Date();
-  const fiveDays = 24 * 60 * 60 * 1000;
+  const fiveDays = 5 * 24 * 60 * 60 * 1000;
   const deadlineSeconds = Math.ceil((now.getTime() + fiveDays) / 1000);
   await deploy("Staker", {
     from: deployer,
-    args: [exampleExternalContract.address, deadlineSeconds, 1000000],
+    args: [exampleExternalContract.address, deadlineSeconds, 10 ** 15],
     log: true,
   });
 };
