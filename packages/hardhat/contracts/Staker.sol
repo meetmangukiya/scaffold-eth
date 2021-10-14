@@ -46,6 +46,11 @@ contract Staker {
   _;
   }
 
+  modifier notCompleted() {
+    require(!exampleExternalContract.completed(), "staking completed!");
+    _;
+  }
+
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
   function stake() external payable beforeDeadline {
@@ -56,7 +61,7 @@ contract Staker {
 
   // After some `deadline` allow anyone to call an `execute()` function
   //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
-  function execute() external afterDeadline thresholdMet {
+  function execute() external afterDeadline thresholdMet notCompleted {
     require(
       address(this).balance > threshold,
       "Threshold was not, users should withdraw their funds"
@@ -69,7 +74,7 @@ contract Staker {
   }
 
   // if the `threshold` was not met, allow everyone to call a `withdraw()` function
-  function withdraw() public afterDeadline thresholdNotMet {
+  function withdraw() public afterDeadline thresholdNotMet notCompleted {
     uint256 toReturn = stakedAmountOf(msg.sender);
     (bool sent, ) = msg.sender.call{value: toReturn}("");
     require(sent, "Failed to withraw Ether");
